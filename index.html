@@ -585,6 +585,7 @@
             width: 30px;
             height: 30px;
             font-size: 1.2rem;
+            line-height: 1;
             cursor: pointer;
             display: flex;
             justify-content: center;
@@ -736,7 +737,7 @@
     <div id="promo-popup" class="modal">
       <div class="promo-popup-content">
         <button class="close-btn">&times;</button>
-        <img src="https://yanoshijapan.github.io/asetonline/voucer10k.jpg" alt="Promo Spesial">
+        <img id="promo-popup-image" src="" alt="Promo Spesial">
       </div>
     </div>
 
@@ -753,7 +754,8 @@
                 "T-Shirt": { title: "T-Shirt Reguler & Premium", detail: "Tshirt dengan bahan cotton 24S dan sablon rubber. Tersedia ukuran S, M, L dan XL.", sizeChart: "https://yanoshijapan.github.io/asetonline/SZT.jpg" },
                 "Hoodie": { title: "Hoodie Pullover", detail: "Hoodie pullover (tanpa resleting) dengan bahan cotton fleece dan sablon rubber. Tersedia ukuran S, M, L dan XL.", sizeChart: "https://yanoshijapan.github.io/asetonline/SZH.jpg" },
                 "Kakejiku Deluxe": { title: "Kakejiku Deluxe", detail: "Hiasan dinding berbahan kanvas suede dengan ukuran 90x30cm.", sizeChart: null },
-                "Kakejiku Premium": { title: "Kakejiku Premium", detail: "Hiasan dinding berbahan kanvas lukis dengan ukuran 90x30cm.", sizeChart: null },
+                // PERBAIKAN: Menambahkan properti popupImage ke Kakejiku Premium
+                "Kakejiku Premium": { title: "Kakejiku Premium", detail: "Hiasan dinding berbahan kanvas lukis dengan ukuran 90x30cm.", sizeChart: null, popupImage: "https://yanoshijapan.github.io/asetonline/diskonpremium.jpg" },
                 "Keychain": { title: "Acrylic Keychain", detail: "Gantungan kunci akrilik diameter 5cm, 1 box isi 6 pieces.", sizeChart: null },
                 "Sake Set": { title: "Sake Set", detail: "Gelas keramik Jepang set, 1 teko dan 4 cangkir.", sizeChart: null },
                 "Katana": { title: "Katana", detail: "Katana jepang bilah stainless dan sarung kayu, panjang 90cm.", sizeChart: null },
@@ -783,8 +785,10 @@
             function showProductPage(category) {
                 const details = CATEGORY_DETAILS[category];
                 if (!details) return;
+
                 document.getElementById('product-page-title').textContent = details.title;
                 document.getElementById('product-page-detail').textContent = details.detail;
+
                 const sizeChartContainer = document.getElementById('size-chart-container');
                 if (details.sizeChart) {
                     sizeChartContainer.style.display = 'block';
@@ -792,6 +796,12 @@
                 } else {
                     sizeChartContainer.style.display = 'none';
                 }
+                
+                // PERBAIKAN: Memeriksa dan menampilkan popup khusus kategori
+                if (details.popupImage) {
+                    showPromoPopup(details.popupImage);
+                }
+
                 showView('page-produk');
                 fetchAndRenderProducts(category);
             }
@@ -976,7 +986,6 @@
                 const nomorPenerima = formatPhoneNumber(document.getElementById('recipient-phone').value);
                 const alamatPenerima = document.getElementById('shipping-address').value.trim();
                 const tanggalKirim = document.getElementById('shipping-date').value;
-
                 if (!customerName || !customerWhatsapp || !namaPenerima || !nomorPenerima || !alamatPenerima) {
                     showNotificationPopup('Mohon lengkapi Nama, WhatsApp, dan Info Pengiriman (Nama Penerima, Nomor, Alamat).');
                     return;
@@ -1080,30 +1089,31 @@
                 popup.style.display = 'flex';
             }
 
-            // PERBAIKAN: Fungsi untuk inisialisasi semua popup
-            function initializePopups() {
-                // Inisialisasi Promo Popup
+            // PERBAIKAN: Fungsi untuk menampilkan promo popup
+            function showPromoPopup(imageUrl) {
                 const promoPopup = document.getElementById('promo-popup');
-                if (promoPopup) {
-                    setTimeout(() => {
-                        promoPopup.style.display = 'flex';
-                    }, 2000); // Muncul setelah 2 detik
-                    promoPopup.querySelector('.close-btn').addEventListener('click', () => {
-                        promoPopup.style.display = 'none';
-                    });
+                const promoImage = document.getElementById('promo-popup-image');
+                if (promoPopup && promoImage) {
+                    promoImage.src = imageUrl;
+                    promoPopup.style.display = 'flex';
                 }
+            }
+
+            function initializePopups() {
+                // Tampilkan popup promo utama untuk halaman beranda
+                showPromoPopup("https://yanoshijapan.github.io/asetonline/voucer10k.jpg");
                 
                 // Tambahkan event listener ke semua modal/popup
                 document.querySelectorAll('.modal').forEach(modal => {
                     modal.addEventListener('click', (event) => {
-                        // Jika yang diklik adalah area latar belakang (modal itu sendiri)
                         if (event.target === modal) {
                             modal.style.display = 'none';
                         }
                     });
                 });
-
+                
                 // Event listener untuk tombol close spesifik
+                document.querySelector('#promo-popup .close-btn').onclick = () => document.getElementById('promo-popup').style.display = 'none';
                 document.querySelector('#imageModal .modal-close').onclick = () => document.getElementById('imageModal').style.display = 'none';
                 document.getElementById('close-notification-btn').onclick = () => document.getElementById('notification-popup').style.display = 'none';
                 document.getElementById('checkout-popup').querySelector('.back-to-home').onclick = (e) => {
@@ -1117,9 +1127,8 @@
             initializeNavMenu();
             updateCartIcon();
             showView('page-utama');
-            initializePopups(); // Panggil fungsi inisialisasi popup
+            initializePopups();
             
-            // Event listener untuk modal gambar produk
             document.body.addEventListener('click', e => {
                 if (e.target.classList.contains('product-image')) {
                     showImageModal(e.target.src);
