@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <base target="_top">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yanoshi Store - Beranda</title>
+    <style>
+      :root {
+        --primary-color: #2c3e50;
+        --secondary-color: #e61c1d;
+        --contact-color:#25d366;
+        --accent-color: #e74c3c;
+        --bg-color: #f4f4f9;
+        --text-color: #333;
+        --white: #ffffff;
+        --gray: #ecf0f1;
+        --black: #000000;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: var(--white); /* Ubah background utama jadi putih */
+        color: var(--text-color);
+        line-height: 1.6;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 15px;
+      }
+      
+      /* --- HEADER --- */
+      .main-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 20px;
+        background-color: var(--white);
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+      }
+
+      .logo-container img {
+        height: 40px;
+        width: auto;
+      }
+
+      .header-right {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+      }
+
+      .cart-icon {
+        position: relative;
+        font-size: 1.8rem;
+        color: var(--primary-color);
+        text-decoration: none;
+      }
+
+      #cart-count {
+        position: absolute;
+        top: -5px;
+        right: -10px;
+        background-color: var(--accent-color);
+        color: var(--white);
+        border-radius: 50%;
+        padding: 2px 6px;
+        font-size: 0.7rem;
+        font-weight: bold;
+        display: none;
+      }
+
+      .hamburger-menu {
+        cursor: pointer;
+        font-size: 1.8rem;
+        color: var(--primary-color);
+      }
+      
+      /* --- Navigasi Samping (Off-canvas) --- */
+      .sidenav {
+        height: 100%;
+        width: 0;
+        position: fixed;
+        z-index: 1001;
+        top: 0;
+        left: 0;
+        background-color: var(--primary-color);
+        overflow-x: hidden;
+        transition: 0.5s ease-in-out;
+        padding-top: 60px;
+      }
+
+      .sidenav a {
+        padding: 10px 15px 10px 32px;
+        text-decoration: none;
+        font-size: 1.2rem;
+        color: var(--gray);
+        display: block;
+        transition: 0.3s;
+      }
+      
+      .sidenav a:hover, .dropdown-content a:hover {
+        color: var(--secondary-color);
+      }
+
+      .sidenav .close-btn {
+        position: absolute;
+        top: 15px;
+        right: 25px;
+        font-size: 36px;
+        color: var(--white);
+      }
+
+      .dropdown-btn {
+        padding: 10px 15px 10px 32px;
+        text-decoration: none;
+        font-size: 1.2rem;
+        color: var(--gray);
+        display: block;
+        border: none;
+        background: none;
+        width: 100%;
+        text-align: left;
+        cursor: pointer;
+        outline: none;
+      }
+      
+      .dropdown-content {
+        display: none;
+        background-color: #2c3e50;
+        padding-left: 20px;
+      }
+
+      /* --- PERUBAHAN TAMPILAN HALAMAN UTAMA --- */
+      
+      /* Welcome & Search Section */
+      .welcome-section {
+          padding: 10px 15px;
+      }
+
+      .welcome-section h1 {
+          font-size: 2rem;
+          font-weight: 700;
+          color: var(--black);
+          line-height: 1.2;
+      }
+      
+      .search-container {
+          position: relative;
+          margin-top: 20px;
+      }
+
+      .search-container input {
+          width: 100%;
+          padding: 15px 20px 15px 50px;
+          border-radius: 12px;
+          border: 1px solid #e0e0e0;
+          font-size: 1rem;
+          background-color: #f7f7f7;
+      }
+
+      .search-container .search-icon {
+          position: absolute;
+          left: 15px;
+          top: 50%;
+          transform: translateY(-50%);
+          font-size: 1.2rem;
+          color: #888;
+      }
+
+      /* Promo Banner Section */
+      .promo-banner-container {
+        margin: 25px 0;
+        position: relative;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+      }
+
+      .promo-banner-container img {
+        width: 100%;
+        display: block;
+        aspect-ratio: 16 / 7;
+        object-fit: cover;
+      }
+      
+      /* Section Header (Choose Brand / Kategori) */
+      .section-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-top: 30px;
+          margin-bottom: 15px;
+      }
+      
+      .section-header h2 {
+          font-size: 1.3rem;
+          color: var(--black);
+      }
+
+      .section-header .see-all {
+          font-size: 0.9rem;
+          color: var(--secondary-color);
+          text-decoration: none;
+          font-weight: 600;
+      }
+
+      /* Grid Kategori Produk */
+      .category-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+          gap: 15px;
+          justify-items: center;
+      }
+
+      .category-card {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 10px;
+          text-decoration: none;
+          color: var(--text-color);
+      }
+      
+      .category-card .icon-container {
+          width: 70px;
+          height: 70px;
+          background-color: #f0f0f0;
+          border-radius: 12px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          overflow: hidden;
+      }
+      
+      .category-card img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+      }
+
+      .category-card p {
+          font-weight: 500;
+          font-size: 0.9rem;
+          text-align: center;
+      }
+
+      /* Style Tambahan */
+      .action-buttons, .social-section {
+          margin-top: 40px;
+          text-align: center;
+      }
+      
+      .btn {
+        padding: 12px 25px;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: bold;
+      }
+      
+      /* --- Modal & Popup (Tidak ada perubahan signifikan) --- */
+       .modal, #checkout-popup, #notification-popup, #promo-popup {
+        display: none;
+        position: fixed;
+        z-index: 2000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.6);
+        justify-content: center;
+        align-items: center;
+      }
+
+      .popup-content {
+        background-color: var(--white);
+        padding: 20px 30px;
+        border-radius: 8px;
+        width: 90%;
+        max-width: 320px;
+        text-align: center;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      }
+    </style>
+</head>
+<body id="page-utama">
+    
+    <header class="main-header">
+      <div class="logo-container">
+        <a href="index.html">
+          <img src="https://yanoshijapan.github.io/asetonline/logohitam.png" alt="Logo Yanoshi">
+        </a>
+      </div>
+      <div class="header-right">
+        <a href="#" class="cart-icon">
+          🛒
+          <span id="cart-count">0</span>
+        </a>
+        <div class="hamburger-menu">
+          ☰
+        </div>
+      </div>
+    </header>
+    
+    <nav id="mySidenav" class="sidenav">
+      <a href="javascript:void(0)" class="close-btn">&times;</a>
+      <a href="#">Kembali ke Beranda</a>
+      <button class="dropdown-btn">Katalog ▾</button>
+      <div class="dropdown-content">
+        <a href="#">Streetwear</a>
+        <a href="#">T-Shirt</a>
+        <a href="#">Hoodie</a>
+        <a href="#">Kakejiku Deluxe</a>
+        <a href="#">Kakejiku Premium</a>
+        <a href="#">Keychain</a>
+        <a href="#">Sake Set</a>
+        <a href="#">Katana</a>
+        <a href="#">Snack Jepang</a>
+      </div>
+      <a href="#">Lihat Keranjang</a>
+      <a href="https://wa.me/6281290156936?text=Halo%20Admin%20Yanoshi" target="_blank">Kontak</a>   
+    </nav>
+
+    <main class="container">
+      <section class="welcome-section">
+          <h1>Let's find<br>Your Gadget!</h1>
+          <div class="search-container">
+              <span class="search-icon">🔍</span>
+              <input type="text" placeholder="Search">
+          </div>
+      </section>
+
+      <section class="promo-banner-container">
+        <img src="https://yanoshijapan.github.io/asetonline/1.jpg" alt="Promo Banner">
+      </section>
+      
+      <section class="category-section">
+        <div class="section-header">
+            <h2>Pilih Kategori</h2>
+            <a href="#" class="see-all">Lihat Semua</a>
+        </div>
+        <div class="category-grid">
+            <a href="#" class="category-card">
+              <div class="icon-container"><img src="https://yanoshijapan.github.io/asetonline/streetwear.jpg" alt="Streetwear"></div>
+              <p>Streetwear</p>
+            </a>
+            <a href="#" class="category-card">
+              <div class="icon-container"><img src="https://yanoshijapan.github.io/asetonline/tshirt.jpg" alt="T-Shirt"></div>
+              <p>T-Shirt</p>
+            </a>
+            <a href="#" class="category-card">
+              <div class="icon-container"><img src="https://yanoshijapan.github.io/asetonline/hoodie.jpg" alt="Hoodie"></div>
+              <p>Hoodie</p>
+            </a>
+            <a href="#" class="category-card">
+              <div class="icon-container"><img src="https://yanoshijapan.github.io/asetonline/deluxe.jpg" alt="Kakejiku Deluxe"></div>
+              <p>Kakejiku D.</p>
+            </a>
+            <a href="#" class="category-card">
+              <div class="icon-container"><img src="https://yanoshijapan.github.io/asetonline/premium.jpg" alt="Kakejiku Premium"></div>
+              <p>Kakejiku P.</p>
+            </a>
+            <a href="#" class="category-card">
+              <div class="icon-container"><img src="https://yanoshijapan.github.io/asetonline/keychain.jpg" alt="Keychain"></div>
+              <p>Keychain</p>
+            </a>
+            <a href="#" class="category-card">
+              <div class="icon-container"><img src="https://yanoshijapan.github.io/asetonline/sake.jpg" alt="Sake Set"></div>
+              <p>Sake Set</p>
+            </a>
+            <a href="#" class="category-card">
+              <div class="icon-container"><img src="https://yanoshijapan.github.io/asetonline/katana.jpg" alt="Katana"></div>
+              <p>Katana</p>
+            </a>
+            <a href="#" class="category-card">
+              <div class="icon-container"><img src="https://yanoshijapan.github.io/asetonline/snack.jpg" alt="Snack"></div>
+              <p>Snack</p>
+            </a>
+        </div>
+      </section>
+
+      <section class="action-buttons">
+        <a href="#" class="btn btn-primary">Lihat Keranjang</a>
+        <a href="https://wa.me/6281290156936?text=Halo%20Admin%20Yanoshi" target="_blank" class="btn btn-secondary">Kontak Admin</a>
+      </section>
+      
+      <section class="social-section">
+        <h3>Follow Sosmed Yanoshi</h3>
+        <div class="social-icons">
+          <a href="https://www.instagram.com/YANOSHI_OMIYAGE" target="_blank">Instagram</a>
+          <a href="https://www.tiktok.com/@yanoshiomiyage" target="_blank">TikTok</a>
+        </div>
+      </section>
+    </main>
+    
+    <div id="promo-popup" class="modal">
+      <div class="popup-content">
+        <a href="#">
+          <img src="https://yanoshijapan.github.io/asetonline/voucer10k.jpg" alt="Promo Spesial">
+        </a>
+        <button id="close-promo-popup">Tutup</button>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+
+        const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbweGxvOCzzONVZI7Eth-J3sUTaSgD5XBOOE3aSXchaYYfWr10Bmh0Idep8VU3Kl4W61/exec';
+        const ADMIN_WHATSAPP_NUMBER = '6281290156936';
+
+        // --- FUNGSI UI (MENU, DLL) ---
+        function initializeNavMenu() {
+            const hamburgerMenu = document.querySelector('.hamburger-menu');
+            const closeBtn = document.querySelector('.close-btn');
+            const dropdownBtn = document.querySelector('.dropdown-btn');
+
+            if (hamburgerMenu) {
+                hamburgerMenu.addEventListener('click', () => { 
+                    document.getElementById('mySidenav').style.width = '250px'; 
+                });
+            }
+            if (closeBtn) {
+                closeBtn.addEventListener('click', () => { 
+                    document.getElementById('mySidenav').style.width = '0'; 
+                });
+            }
+            if (dropdownBtn) {
+                dropdownBtn.addEventListener('click', function() {
+                    this.classList.toggle('active');
+                    const dropdownContent = this.nextElementSibling;
+                    if (dropdownContent) {
+                        dropdownContent.style.display = dropdownContent.style.display === 'block' ? 'none' : 'block';
+                    }
+                });
+            }
+        }
+        
+        // --- Inisialisasi fungsi-fungsi ---
+        initializeNavMenu();
+
+        // Di sini Anda bisa menambahkan kembali logika JavaScript lain jika dibutuhkan,
+        // seperti logika keranjang belanja, popup, slider, dll.
+        // Untuk saat ini, saya fokus pada penggabungan dan perubahan layout.
+
+      });
+    </script>
+</body>
+</html>
