@@ -931,84 +931,123 @@
             });
             
             // FUNGSI CHECKOUT YANG DIPERBARUI
-            document.getElementById('checkout-btn').addEventListener('click', () => {
-                const checkoutBtn = document.getElementById('checkout-btn');
-                
-                // Kumpulkan data pemesan
-                const customerName = document.getElementById('customer-name').value.trim();
-                const customerWhatsapp = document.getElementById('customer-whatsapp').value.trim();
+           const getCurrentPrice = (item, cart) => {
+    const totalKpQuantity = cart.reduce((sum, cartItem) => cartItem.id.startsWith("KP") ? sum + cartItem.quantity : sum, 0);
+    const rule = PRICING_RULES[item.id.substring(0, 2)];
+    if (rule && totalKpQuantity >= rule.tiers[0].minQty) {
+        return rule.tiers[0].price;
+    }
+    return item.price;
+};
 
-                // Kumpulkan data pengiriman
-                const recipientName = document.getElementById('recipient-name').value.trim();
-                const recipientPhone = document.getElementById('recipient-phone').value.trim();
-                const shippingAddress = document.getElementById('shipping-address').value.trim();
-                const shippingDate = document.getElementById('shipping-date').value;
+// FUNGSI CHECKOUT YANG DIPERBARUI
+const getCurrentPrice = (item, cart) => {
+    const totalKpQuantity = cart.reduce((sum, cartItem) => cartItem.id.startsWith("KP") ? sum + cartItem.quantity : sum, 0);
+    const rule = PRICING_RULES[item.id.substring(0, 2)];
+    if (rule && totalKpQuantity >= rule.tiers[0].minQty) {
+        return rule.tiers[0].price;
+    }
+    return item.price;
+};
 
-                // Validasi input
-                if (!customerName || !customerWhatsapp || !recipientName || !recipientPhone || !shippingAddress) {
-                    showNotificationPopup('Mohon lengkapi Nama, WhatsApp, dan Info Pengiriman (Nama Penerima, Nomor, Alamat).');
-                    return;
-                }
+// FUNGSI CHECKOUT YANG DIPERBARUI
+// ▼▼▼ TEMPEL BLOK BARU YANG LENGKAP INI ▼▼▼
 
-                const cart = getCart();
-                if (cart.length === 0) {
-                    showNotificationPopup('Keranjang Anda kosong.');
-                    return;
-                }
+// Fungsi helper untuk mendapatkan harga saat ini (termasuk harga grosir)
+const getCurrentPrice = (item, cart) => {
+    const totalKpQuantity = cart.reduce((sum, cartItem) => cartItem.id.startsWith("KP") ? sum + cartItem.quantity : sum, 0);
+    const rule = PRICING_RULES[item.id.substring(0, 2)];
+    if (rule && totalKpQuantity >= rule.tiers[0].minQty) {
+        return rule.tiers[0].price;
+    }
+    return item.price;
+};
+// ▼▼▼ TEMPEL BLOK BARU YANG LENGKAP INI ▼▼▼
 
-                // Hitung total harga
-                let subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-                let totalDiscount = 0;
-                if (appliedVoucher) {
-                    const voucher = VOUCHER_CODES[appliedVoucher];
-                    totalDiscount = cart.reduce((sum, item) => item.id.startsWith(voucher.target) ? sum + (voucher.discount * item.quantity) : sum, 0);
-                }
-                const finalTotalPrice = subtotal - totalDiscount;
+// Fungsi helper untuk mendapatkan harga saat ini (termasuk harga grosir)
+const getCurrentPrice = (item, cart) => {
+    const totalKpQuantity = cart.reduce((sum, cartItem) => cartItem.id.startsWith("KP") ? sum + cartItem.quantity : sum, 0);
+    const rule = PRICING_RULES[item.id.substring(0, 2)];
+    if (rule && totalKpQuantity >= rule.tiers[0].minQty) {
+        return rule.tiers[0].price;
+    }
+    return item.price;
+};
 
-                // Siapkan objek data untuk dikirim
-                const orderData = {
-                    customerName, customerWhatsapp,
-                    recipientName, recipientPhone, shippingAddress, shippingDate,
-                    items: cart,
-                    totalPrice: finalTotalPrice,
-                    voucherCode: appliedVoucher || ''
-                };
+// FUNGSI CHECKOUT YANG DIPERBARUI
+document.getElementById('checkout-btn').addEventListener('click', () => {
+    const checkoutBtn = document.getElementById('checkout-btn');
+    
+    const customerName = document.getElementById('customer-name').value.trim();
+    const customerWhatsapp = document.getElementById('customer-whatsapp').value.trim();
+    const recipientName = document.getElementById('recipient-name').value.trim();
+    const recipientPhone = document.getElementById('recipient-phone').value.trim();
+    const shippingAddress = document.getElementById('shipping-address').value.trim();
+    const shippingDate = document.getElementById('shipping-date').value;
 
-                checkoutBtn.disabled = true;
-                checkoutBtn.textContent = 'Memproses...';
+    if (!customerName || !customerWhatsapp || !recipientName || !recipientPhone || !shippingAddress) {
+        showNotificationPopup('Mohon lengkapi Nama, WhatsApp, dan Info Pengiriman (Nama Penerima, Nomor, Alamat).');
+        return;
+    }
 
-                fetch(WEB_APP_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                    body: JSON.stringify(orderData)
-                })
-                .then(response => response.json())
-                .then(response => {
-                    if (response.status === 'success') {
-                        const defaultMessage = `Halo admin Yanoshi, saya *${customerName}* sudah checkout dari webstore, tolong segera di proses ya!`;
-                        const waLink = `https://wa.me/${ADMIN_WHATSAPP_NUMBER}?text=${encodeURIComponent(defaultMessage)}`;
-                        document.getElementById('konfirmasi-wa-btn').href = waLink;
-                        
-                        localStorage.removeItem('yanoshiCart');
-                        saveCart([]);
-                        appliedVoucher = null;
-                        
-                        document.getElementById('checkout-popup').style.display = 'flex';
-                    } else {
-                        showNotificationPopup('Terjadi kesalahan: ' + response.message);
-                    }
-                })
-                .catch(error => {
-                    showNotificationPopup('Gagal terhubung ke server. Coba lagi nanti.');
-                    console.error('Checkout Error:', error);
-                })
-                .finally(() => {
-                    checkoutBtn.disabled = false;
-                    checkoutBtn.textContent = 'CHECKOUT';
-                });
-            });
+    const cart = getCart();
+    if (cart.length === 0) {
+        showNotificationPopup('Keranjang Anda kosong.');
+        return;
+    }
 
+    // PERBAIKAN: Hitung total harga menggunakan fungsi helper
+    let subtotal = cart.reduce((sum, item) => sum + getCurrentPrice(item, cart) * item.quantity, 0);
+    let totalDiscount = 0;
+    if (appliedVoucher) {
+        const voucher = VOUCHER_CODES[appliedVoucher];
+        totalDiscount = cart.reduce((sum, item) => item.id.startsWith(voucher.target) ? sum + (voucher.discount * item.quantity) : sum, 0);
+    }
+    const finalTotalPrice = subtotal - totalDiscount;
 
+    const orderData = {
+        customerName, customerWhatsapp,
+        recipientName, recipientPhone, shippingAddress, shippingDate,
+        items: cart,
+        totalPrice: finalTotalPrice,
+        voucherCode: appliedVoucher || ''
+    };
+
+    checkoutBtn.disabled = true;
+    checkoutBtn.textContent = 'Memproses...';
+
+    fetch(WEB_APP_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(orderData)
+    })
+    .then(response => response.json())
+    .then(response => {
+        if (response.status === 'success') {
+            const defaultMessage = `Jangan ubah format pesan ini, langsung tekan tombol send.\n\nHalo admin Yanoshi, saya *${customerName}* sudah checkout dari webstore Yanoshi, tolong segera di proses ya!`;
+            const waLink = `https://wa.me/${ADMIN_WHATSAPP_NUMBER}?text=${encodeURIComponent(defaultMessage)}`;
+            document.getElementById('konfirmasi-wa-btn').href = waLink;
+            
+            localStorage.removeItem('yanoshiCart');
+            saveCart([]);
+            appliedVoucher = null;
+            
+            document.getElementById('checkout-popup').style.display = 'flex';
+        } else {
+            showNotificationPopup('Terjadi kesalahan: ' + response.message);
+        }
+    })
+    .catch(error => {
+        showNotificationPopup('Gagal terhubung ke server. Coba lagi nanti.');
+        console.error('Checkout Error:', error);
+    })
+    .finally(() => {
+        checkoutBtn.disabled = false;
+        checkoutBtn.textContent = 'CHECKOUT';
+    });
+});
+
+// ▲▲▲ KODE BARU SELESAI DI SINI ▲▲▲
             // --- NAVIGATION & UI INITIALIZATION ---
             function initializeNavMenu() {
                 const hamburger = document.querySelector('.hamburger-menu');
@@ -1085,3 +1124,4 @@
     </script>
 </body>
 </html>
+
