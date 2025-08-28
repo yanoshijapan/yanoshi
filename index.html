@@ -533,7 +533,7 @@
         }
 
         /* --- Modals & Popups --- */
-        .modal, #checkout-popup, #notification-popup, #promo-popup {
+        .modal {
             display: none;
             position: fixed;
             z-index: 2000;
@@ -558,6 +558,37 @@
             padding: 20px 30px; border-radius: 8px; width: 90%;
             max-width: 320px; text-align: center;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .promo-popup-content {
+            padding: 0;
+            background: none;
+            box-shadow: none;
+            max-width: 500px;
+            width: 90%;
+            position: relative;
+        }
+
+        .promo-popup-content img {
+            width: 100%;
+            border-radius: 8px;
+        }
+        
+        .promo-popup-content .close-btn {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background: var(--primary-color);
+            color: white;
+            border: 2px solid white;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
         
         .popup-content h2 { color: var(--secondary-color); margin-bottom: 15px; }
@@ -702,6 +733,13 @@
     <div id="notification-popup" class="modal"><div class="popup-content"><p id="notification-message" style="margin-bottom: 20px;"></p><button id="close-notification-btn" class="btn btn-primary">OK</button></div></div>
     <div id="toast-notification"></div>
 
+    <div id="promo-popup" class="modal">
+      <div class="promo-popup-content">
+        <button class="close-btn">&times;</button>
+        <img src="https://yanoshijapan.github.io/asetonline/voucer10k.jpg" alt="Promo Spesial">
+      </div>
+    </div>
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbweGxvOCzzONVZI7Eth-J3sUTaSgD5XBOOE3aSXchaYYfWr10Bmh0Idep8VU3Kl4W61/exec';
@@ -745,10 +783,8 @@
             function showProductPage(category) {
                 const details = CATEGORY_DETAILS[category];
                 if (!details) return;
-
                 document.getElementById('product-page-title').textContent = details.title;
                 document.getElementById('product-page-detail').textContent = details.detail;
-
                 const sizeChartContainer = document.getElementById('size-chart-container');
                 if (details.sizeChart) {
                     sizeChartContainer.style.display = 'block';
@@ -756,7 +792,6 @@
                 } else {
                     sizeChartContainer.style.display = 'none';
                 }
-                
                 showView('page-produk');
                 fetchAndRenderProducts(category);
             }
@@ -765,9 +800,7 @@
                 const productContainer = document.getElementById('product-container');
                 productContainer.innerHTML = '<div id="loading-container"><div id="progress-bar"></div></div>';
                 const progressBar = document.getElementById('progress-bar');
-                
                 setTimeout(() => { progressBar.style.width = '90%'; }, 100);
-
                 fetch(`${WEB_APP_URL}?action=getProducts&category=${category}`)
                     .then(response => response.json())
                     .then(response => {
@@ -793,12 +826,10 @@
                     acc[product.productId].push(product);
                     return acc;
                 }, {});
-
                 for (const productId in groupedProducts) {
                     const productVariants = groupedProducts[productId];
                     const mainProduct = productVariants[0];
                     const totalStock = productVariants.reduce((sum, variant) => sum + variant.stock, 0);
-                    
                     let sizeOptionsHtml = '';
                     if (mainProduct.size !== '-') {
                         productVariants.forEach(variant => {
@@ -825,7 +856,6 @@
                                 </button>
                             </div>
                         </div>`;
-                    
                     productCard.querySelector('.add-to-cart-btn').onclick = function() {
                         addToCartFromDynamic(this, productId);
                     };
@@ -840,15 +870,12 @@
                 const price = parseInt(productCard.querySelector('.product-price').textContent.replace(/[^0-9]/g, ''), 10);
                 const sizeSelector = productCard.querySelector('.size-selector');
                 let selectedSize = sizeSelector ? sizeSelector.value : '';
-                
                 const cartItemId = selectedSize && selectedSize !== '-' ? `${productId}-${selectedSize}` : productId;
                 const nameForCart = selectedSize && selectedSize !== '-' ? `${name} - Size ${selectedSize}` : name;
-                
                 let cart = getCart();
                 const existingItem = cart.find(item => item.id === cartItemId);
                 if (existingItem) existingItem.quantity++;
                 else cart.push({ id: cartItemId, name: nameForCart, price, image, quantity: 1 });
-                
                 saveCart(cart);
                 showToast(`${nameForCart} ditambahkan`);
             };
@@ -869,22 +896,16 @@
                 const cartItemsContainer = document.getElementById('cart-items-container');
                 const cartSummaryContainer = document.getElementById('cart-summary-container');
                 cartItemsContainer.innerHTML = '';
-
                 if (cart.length === 0) {
                     cartItemsContainer.innerHTML = '<p>Keranjang belanja Anda masih kosong.</p>';
                     cartSummaryContainer.style.display = 'none';
                     return;
                 }
-                
                 cartSummaryContainer.style.display = 'block';
-                const totalKpQuantity = cart.reduce((sum, item) => item.id.startsWith("KP") ? sum + item.quantity : sum, 0);
                 let totalPrice = 0;
-                
                 cart.forEach(item => {
-                    const rule = PRICING_RULES[item.id.substring(0, 2)];
-                    const currentPrice = (rule && totalKpQuantity >= rule.tiers[0].minQty) ? rule.tiers[0].price : item.price;
+                    const currentPrice = getCurrentPrice(item, cart);
                     totalPrice += currentPrice * item.quantity;
-                    
                     const itemEl = document.createElement('div');
                     itemEl.className = 'cart-item';
                     itemEl.innerHTML = `
@@ -903,7 +924,6 @@
                         </div>`;
                     cartItemsContainer.appendChild(itemEl);
                 });
-
                 document.getElementById('total-price').textContent = `Rp ${totalPrice.toLocaleString('id-ID')}`;
                 document.getElementById('discount-row').style.display = 'none';
                 document.getElementById('voucher-input').value = '';
@@ -941,22 +961,15 @@
                         appliedVoucher = voucherCode;
                         document.getElementById('discount-amount').textContent = `- Rp ${totalDiscount.toLocaleString('id-ID')}`;
                         document.getElementById('discount-row').style.display = 'flex';
-                        
-                        // PERBAIKAN LOGIKA VOUCHER ADA DI SINI
                         const subtotal = cart.reduce((sum, item) => sum + getCurrentPrice(item, cart) * item.quantity, 0);
                         document.getElementById('total-price').textContent = `Rp ${(subtotal - totalDiscount).toLocaleString('id-ID')}`;
                         showNotificationPopup('Yay! Voucher berhasil digunakan!');
-                    } else { 
-                        showNotificationPopup('Voucher tidak berlaku untuk produk di keranjangmu.'); 
-                    }
-                } else { 
-                    showNotificationPopup('Kode voucher salah atau tidak valid.'); 
-                }
+                    } else { showNotificationPopup('Voucher tidak berlaku untuk produk di keranjangmu.'); }
+                } else { showNotificationPopup('Kode voucher salah atau tidak valid.'); }
             });
             
             document.getElementById('checkout-btn').addEventListener('click', () => {
                 const checkoutBtn = document.getElementById('checkout-btn');
-                
                 const customerName = document.getElementById('customer-name').value.trim();
                 const customerWhatsapp = formatPhoneNumber(document.getElementById('customer-whatsapp').value);
                 const namaPenerima = document.getElementById('recipient-name').value.trim();
@@ -968,13 +981,11 @@
                     showNotificationPopup('Mohon lengkapi Nama, WhatsApp, dan Info Pengiriman (Nama Penerima, Nomor, Alamat).');
                     return;
                 }
-
                 const cart = getCart();
                 if (cart.length === 0) {
                     showNotificationPopup('Keranjang Anda kosong.');
                     return;
                 }
-
                 let subtotal = cart.reduce((sum, item) => sum + getCurrentPrice(item, cart) * item.quantity, 0);
                 let totalDiscount = 0;
                 if (appliedVoucher) {
@@ -982,22 +993,12 @@
                     totalDiscount = cart.reduce((sum, item) => item.id.startsWith(voucher.target) ? sum + (voucher.discount * item.quantity) : sum, 0);
                 }
                 const finalTotalPrice = subtotal - totalDiscount;
-
                 const orderData = {
-                    customerName, 
-                    customerWhatsapp,
-                    namaPenerima, 
-                    nomorPenerima, 
-                    alamatPenerima, 
-                    tanggalKirim,
-                    items: cart,
-                    totalPrice: finalTotalPrice,
-                    voucherCode: appliedVoucher || ''
+                    customerName, customerWhatsapp, namaPenerima, nomorPenerima, alamatPenerima, tanggalKirim,
+                    items: cart, totalPrice: finalTotalPrice, voucherCode: appliedVoucher || ''
                 };
-
                 checkoutBtn.disabled = true;
                 checkoutBtn.textContent = 'Memproses...';
-
                 fetch(WEB_APP_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
@@ -1009,11 +1010,9 @@
                         const defaultMessage = `Jangan ubah format pesan ini, langsung tekan tombol send.\n\nHalo admin Yanoshi, saya *${customerName}* sudah checkout dari webstore Yanoshi, tolong segera di proses ya!`;
                         const waLink = `https://wa.me/${ADMIN_WHATSAPP_NUMBER}?text=${encodeURIComponent(defaultMessage)}`;
                         document.getElementById('konfirmasi-wa-btn').href = waLink;
-                        
                         localStorage.removeItem('yanoshiCart');
                         saveCart([]);
                         appliedVoucher = null;
-                        
                         document.getElementById('checkout-popup').style.display = 'flex';
                     } else {
                         showNotificationPopup('Terjadi kesalahan: ' + response.message);
@@ -1034,13 +1033,11 @@
                 const sidenav = document.getElementById('mySidenav');
                 const closeBtn = sidenav.querySelector('.close-btn');
                 const dropdownBtn = sidenav.querySelector('.dropdown-btn');
-
                 hamburger.addEventListener('click', () => { sidenav.style.width = '250px'; });
                 closeBtn.addEventListener('click', () => { sidenav.style.width = '0'; });
                 dropdownBtn.addEventListener('click', function() {
                     this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'block' ? 'none' : 'block';
                 });
-                
                 document.querySelectorAll('.nav-link').forEach(link => {
                     link.addEventListener('click', () => {
                         const page = link.dataset.page;
@@ -1051,15 +1048,12 @@
                         sidenav.style.width = '0';
                     });
                 });
-                
                 document.querySelectorAll('.category-card').forEach(card => {
                     card.addEventListener('click', () => showProductPage(card.dataset.category));
                 });
-
                 document.querySelectorAll('.back-to-home, #logo-home-btn').forEach(btn => {
                     btn.addEventListener('click', (e) => { e.preventDefault(); showView('page-utama'); });
                 });
-                
                 document.querySelector('.cart-icon').addEventListener('click', () => {
                     renderCartPage();
                     showView('page-keranjang');
@@ -1070,11 +1064,7 @@
                 document.getElementById('modalImage').src = src;
                 document.getElementById('imageModal').style.display = 'block';
             }
-            document.querySelector('#imageModal .modal-close').onclick = () => document.getElementById('imageModal').style.display = 'none';
-            document.body.addEventListener('click', e => {
-                if (e.target.classList.contains('product-image')) showImageModal(e.target.src);
-            });
-            
+
             let toastTimeout;
             function showToast(message) {
                 const toast = document.getElementById('toast-notification');
@@ -1089,17 +1079,52 @@
                 document.getElementById('notification-message').textContent = message;
                 popup.style.display = 'flex';
             }
-            document.getElementById('close-notification-btn').onclick = () => document.getElementById('notification-popup').style.display = 'none';
-            document.getElementById('checkout-popup').querySelector('.back-to-home').onclick = (e) => {
-                e.preventDefault();
-                document.getElementById('checkout-popup').style.display = 'none';
-                showView('page-utama');
+
+            // PERBAIKAN: Fungsi untuk inisialisasi semua popup
+            function initializePopups() {
+                // Inisialisasi Promo Popup
+                const promoPopup = document.getElementById('promo-popup');
+                if (promoPopup) {
+                    setTimeout(() => {
+                        promoPopup.style.display = 'flex';
+                    }, 2000); // Muncul setelah 2 detik
+                    promoPopup.querySelector('.close-btn').addEventListener('click', () => {
+                        promoPopup.style.display = 'none';
+                    });
+                }
+                
+                // Tambahkan event listener ke semua modal/popup
+                document.querySelectorAll('.modal').forEach(modal => {
+                    modal.addEventListener('click', (event) => {
+                        // Jika yang diklik adalah area latar belakang (modal itu sendiri)
+                        if (event.target === modal) {
+                            modal.style.display = 'none';
+                        }
+                    });
+                });
+
+                // Event listener untuk tombol close spesifik
+                document.querySelector('#imageModal .modal-close').onclick = () => document.getElementById('imageModal').style.display = 'none';
+                document.getElementById('close-notification-btn').onclick = () => document.getElementById('notification-popup').style.display = 'none';
+                document.getElementById('checkout-popup').querySelector('.back-to-home').onclick = (e) => {
+                    e.preventDefault();
+                    document.getElementById('checkout-popup').style.display = 'none';
+                    showView('page-utama');
+                };
             }
             
             // --- First Load ---
             initializeNavMenu();
             updateCartIcon();
             showView('page-utama');
+            initializePopups(); // Panggil fungsi inisialisasi popup
+            
+            // Event listener untuk modal gambar produk
+            document.body.addEventListener('click', e => {
+                if (e.target.classList.contains('product-image')) {
+                    showImageModal(e.target.src);
+                }
+            });
         });
     </script>
 </body>
