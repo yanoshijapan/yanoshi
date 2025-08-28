@@ -722,6 +722,16 @@
                 "Snack Jepang": { title: "Paket Snack Jepang", detail: "Paket box snack Jepang isi 20+, isi sesuai pada gambar di katalog ini.", sizeChart: null }
             };
 
+            // PERUBAHAN: Penambahan fungsi formatPhoneNumber
+            function formatPhoneNumber(phoneNumber) {
+                if (!phoneNumber) return ''; 
+                let cleanNumber = String(phoneNumber).trim().replace(/[^0-9]/g, '');
+                if (cleanNumber.startsWith('62')) {
+                    cleanNumber = '0' + cleanNumber.substring(2);
+                }
+                return cleanNumber;
+            }
+
             const views = document.querySelectorAll('.view');
 
             function showView(viewId) {
@@ -942,14 +952,15 @@
             document.getElementById('checkout-btn').addEventListener('click', () => {
                 const checkoutBtn = document.getElementById('checkout-btn');
                 
+                // PERUBAHAN: Memanggil formatPhoneNumber saat mengambil data
                 const customerName = document.getElementById('customer-name').value.trim();
-                const customerWhatsapp = document.getElementById('customer-whatsapp').value.trim();
-                const recipientName = document.getElementById('recipient-name').value.trim();
-                const recipientPhone = document.getElementById('recipient-phone').value.trim();
-                const shippingAddress = document.getElementById('shipping-address').value.trim();
-                const shippingDate = document.getElementById('shipping-date').value;
+                const customerWhatsapp = formatPhoneNumber(document.getElementById('customer-whatsapp').value);
+                const namaPenerima = document.getElementById('recipient-name').value.trim();
+                const nomorPenerima = formatPhoneNumber(document.getElementById('recipient-phone').value);
+                const alamatPenerima = document.getElementById('shipping-address').value.trim();
+                const tanggalKirim = document.getElementById('shipping-date').value;
 
-                if (!customerName || !customerWhatsapp || !recipientName || !recipientPhone || !shippingAddress) {
+                if (!customerName || !customerWhatsapp || !namaPenerima || !nomorPenerima || !alamatPenerima) {
                     showNotificationPopup('Mohon lengkapi Nama, WhatsApp, dan Info Pengiriman (Nama Penerima, Nomor, Alamat).');
                     return;
                 }
@@ -970,7 +981,7 @@
 
                 const orderData = {
                     customerName, customerWhatsapp,
-                    recipientName, recipientPhone, shippingAddress, shippingDate,
+                    namaPenerima, nomorPenerima, alamatPenerima, tanggalKirim,
                     items: cart,
                     totalPrice: finalTotalPrice,
                     voucherCode: appliedVoucher || ''
