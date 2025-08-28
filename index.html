@@ -200,7 +200,7 @@
 
         .category-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); /* Sedikit lebih lebar */
             gap: 15px;
             justify-items: center;
         }
@@ -215,9 +215,10 @@
             cursor: pointer;
         }
         
+        /* PERUBAHAN: Ukuran grid diperbesar */
         .category-card .icon-container {
-            width: 70px;
-            height: 70px;
+            width: 80px;
+            height: 80px;
             background-color: #f0f0f0;
             border-radius: 12px;
             display: flex;
@@ -533,6 +534,7 @@
         }
 
         /* --- Modals & Popups --- */
+        /* PERUBAHAN: Menghapus padding-top agar popup bisa di tengah */
         .modal {
             display: none;
             position: fixed;
@@ -542,10 +544,11 @@
             background-color: rgba(0, 0, 0, 0.6);
             justify-content: center;
             align-items: center;
+            padding: 20px; /* Tambahkan padding untuk mobile */
         }
 
         .modal-content {
-            margin: auto; display: block; width: 80%; max-width: 700px;
+            margin: auto; display: block; width: 100%; max-width: 700px;
         }
 
         .modal-close {
@@ -754,7 +757,6 @@
                 "T-Shirt": { title: "T-Shirt Reguler & Premium", detail: "Tshirt dengan bahan cotton 24S dan sablon rubber. Tersedia ukuran S, M, L dan XL.", sizeChart: "https://yanoshijapan.github.io/asetonline/SZT.jpg" },
                 "Hoodie": { title: "Hoodie Pullover", detail: "Hoodie pullover (tanpa resleting) dengan bahan cotton fleece dan sablon rubber. Tersedia ukuran S, M, L dan XL.", sizeChart: "https://yanoshijapan.github.io/asetonline/SZH.jpg" },
                 "Kakejiku Deluxe": { title: "Kakejiku Deluxe", detail: "Hiasan dinding berbahan kanvas suede dengan ukuran 90x30cm.", sizeChart: null },
-                // PERBAIKAN: Menambahkan properti popupImage ke Kakejiku Premium
                 "Kakejiku Premium": { title: "Kakejiku Premium", detail: "Hiasan dinding berbahan kanvas lukis dengan ukuran 90x30cm.", sizeChart: null, popupImage: "https://yanoshijapan.github.io/asetonline/diskonpremium.jpg" },
                 "Keychain": { title: "Acrylic Keychain", detail: "Gantungan kunci akrilik diameter 5cm, 1 box isi 6 pieces.", sizeChart: null },
                 "Sake Set": { title: "Sake Set", detail: "Gelas keramik Jepang set, 1 teko dan 4 cangkir.", sizeChart: null },
@@ -785,10 +787,8 @@
             function showProductPage(category) {
                 const details = CATEGORY_DETAILS[category];
                 if (!details) return;
-
                 document.getElementById('product-page-title').textContent = details.title;
                 document.getElementById('product-page-detail').textContent = details.detail;
-
                 const sizeChartContainer = document.getElementById('size-chart-container');
                 if (details.sizeChart) {
                     sizeChartContainer.style.display = 'block';
@@ -796,12 +796,9 @@
                 } else {
                     sizeChartContainer.style.display = 'none';
                 }
-                
-                // PERBAIKAN: Memeriksa dan menampilkan popup khusus kategori
                 if (details.popupImage) {
                     showPromoPopup(details.popupImage);
                 }
-
                 showView('page-produk');
                 fetchAndRenderProducts(category);
             }
@@ -1089,7 +1086,6 @@
                 popup.style.display = 'flex';
             }
 
-            // PERBAIKAN: Fungsi untuk menampilkan promo popup
             function showPromoPopup(imageUrl) {
                 const promoPopup = document.getElementById('promo-popup');
                 const promoImage = document.getElementById('promo-popup-image');
@@ -1101,9 +1097,12 @@
 
             function initializePopups() {
                 // Tampilkan popup promo utama untuk halaman beranda
-                showPromoPopup("https://yanoshijapan.github.io/asetonline/voucer10k.jpg");
+                setTimeout(() => {
+                    if (document.getElementById('page-utama').classList.contains('active')) {
+                        showPromoPopup("https://yanoshijapan.github.io/asetonline/voucer10k.jpg");
+                    }
+                }, 2000);
                 
-                // Tambahkan event listener ke semua modal/popup
                 document.querySelectorAll('.modal').forEach(modal => {
                     modal.addEventListener('click', (event) => {
                         if (event.target === modal) {
@@ -1112,7 +1111,6 @@
                     });
                 });
                 
-                // Event listener untuk tombol close spesifik
                 document.querySelector('#promo-popup .close-btn').onclick = () => document.getElementById('promo-popup').style.display = 'none';
                 document.querySelector('#imageModal .modal-close').onclick = () => document.getElementById('imageModal').style.display = 'none';
                 document.getElementById('close-notification-btn').onclick = () => document.getElementById('notification-popup').style.display = 'none';
