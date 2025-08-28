@@ -506,8 +506,25 @@
         .checkout-form { margin-top: 30px; }
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
-        .form-group input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; }
+        .form-group input, .form-group textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         
+        /* Styling untuk fieldset info pengiriman */
+        .info-pengiriman-card { 
+            background-color: #f8f9fa; 
+            border: 1px solid #e9ecef;
+            border-radius: 12px; 
+            padding: 20px; 
+            margin-top: 20px; 
+            margin-bottom: 20px;
+        }
+        .fieldset-title {
+            font-size: 1.3em; 
+            font-weight: bold; 
+            margin-bottom: 20px;
+            padding: 0;  
+            color: var(--primary-color); 
+        }
+
         .cart-actions {
             margin-top: 20px;
             display: flex;
@@ -651,6 +668,27 @@
                     <div class="form-group"><label for="customer-name">Nama Lengkap</label><input type="text" id="customer-name" placeholder="Masukkan namamu"></div>
                     <div class="form-group"><label for="customer-whatsapp">Nomor WhatsApp (Contoh: 081234567890)</label><input type="tel" id="customer-whatsapp" placeholder="Masukkan nomor WhatsApp aktif"></div>
                 </div>
+
+                <fieldset class="info-pengiriman-card">
+                    <h2 class="fieldset-title">Info Pengiriman</h2>
+                    <div class="form-group">
+                        <label for="recipient-name">Nama Penerima</label>
+                        <input type="text" id="recipient-name" placeholder="Nama penerima paket">
+                    </div>
+                    <div class="form-group">
+                        <label for="recipient-phone">Nomor Penerima (Contoh: 081234567890)</label>
+                        <input type="tel" id="recipient-phone" placeholder="Nomor telepon penerima yang bisa dihubungi">
+                    </div>
+                    <div class="form-group">
+                        <label for="shipping-address">Alamat Pengiriman</label>
+                        <textarea id="shipping-address" rows="3" placeholder="Alamat lengkap, termasuk kecamatan, kota, dan kode pos"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="shipping-date">Request Tanggal Kirim (Opsional)</label>
+                        <input type="date" id="shipping-date">
+                    </div>
+                </fieldset>
+
                 <div class="cart-actions">
                     <button class="btn back-to-home">Kembali ke Beranda</button>
                     <button id="checkout-btn" class="btn btn-primary">CHECKOUT</button>
@@ -892,74 +930,83 @@
                 } else { showNotificationPopup('Kode voucher salah atau tidak valid.'); }
             });
             
+            // FUNGSI CHECKOUT YANG DIPERBARUI
             document.getElementById('checkout-btn').addEventListener('click', () => {
-			    const customerName = document.getElementById('customer-name').value.trim();
-			    const customerWhatsapp = document.getElementById('customer-whatsapp').value.trim();
-			    const checkoutBtn = document.getElementById('checkout-btn');
-			
-			    if (!customerName || !customerWhatsapp) {
-			        showNotificationPopup('Mohon isi nama lengkap dan nomor WhatsApp Kamu.');
-			        return;
-			    }
-			
-			    const cart = getCart();
-			    if (cart.length === 0) {
-			        showNotificationPopup('Keranjang Anda kosong.');
-			        return;
-			    }
-			
-			    // Hitung ulang total harga akhir termasuk voucher
-			    let subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-			    let totalDiscount = 0;
-			    if (appliedVoucher) {
-			        const voucher = VOUCHER_CODES[appliedVoucher];
-			        totalDiscount = cart.reduce((sum, item) => item.id.startsWith(voucher.target) ? sum + (voucher.discount * item.quantity) : sum, 0);
-			    }
-			    const finalTotalPrice = subtotal - totalDiscount;
-			
-			    const orderData = {
-			        customerName: customerName,
-			        customerWhatsapp: customerWhatsapp,
-			        items: cart,
-			        totalPrice: finalTotalPrice,
-			        voucherCode: appliedVoucher || ''
-			    };
-			
-			    // Nonaktifkan tombol saat proses
-			    checkoutBtn.disabled = true;
-			    checkoutBtn.textContent = 'Memproses...';
-			
-			    fetch(WEB_APP_URL, {
-			        method: 'POST',
-			        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-			        body: JSON.stringify(orderData)
-			    })
-			    .then(response => response.json())
-			    .then(response => {
-			        if (response.status === 'success') {
-			            const defaultMessage = `Halo admin Yanoshi, saya *${customerName}* sudah checkout dari webstore, tolong segera di proses ya!`;
-			            const waLink = `https://wa.me/${ADMIN_WHATSAPP_NUMBER}?text=${encodeURIComponent(defaultMessage)}`;
-			            document.getElementById('konfirmasi-wa-btn').href = waLink;
-			
-			            localStorage.removeItem('yanoshiCart');
-			            saveCart([]); // Kosongkan keranjang
-			            appliedVoucher = null; // Reset voucher
-			
-			            document.getElementById('checkout-popup').style.display = 'flex';
-			        } else {
-			            showNotificationPopup('Terjadi kesalahan: ' + response.message);
-			        }
-			    })
-			    .catch(error => {
-			        showNotificationPopup('Gagal terhubung ke server. Coba lagi nanti.');
-			        console.error('Checkout Error:', error);
-			    })
-			    .finally(() => {
-			        // Aktifkan kembali tombol setelah selesai
-			        checkoutBtn.disabled = false;
-			        checkoutBtn.textContent = 'CHECKOUT';
-			    });
-			});
+                const checkoutBtn = document.getElementById('checkout-btn');
+                
+                // Kumpulkan data pemesan
+                const customerName = document.getElementById('customer-name').value.trim();
+                const customerWhatsapp = document.getElementById('customer-whatsapp').value.trim();
+
+                // Kumpulkan data pengiriman
+                const recipientName = document.getElementById('recipient-name').value.trim();
+                const recipientPhone = document.getElementById('recipient-phone').value.trim();
+                const shippingAddress = document.getElementById('shipping-address').value.trim();
+                const shippingDate = document.getElementById('shipping-date').value;
+
+                // Validasi input
+                if (!customerName || !customerWhatsapp || !recipientName || !recipientPhone || !shippingAddress) {
+                    showNotificationPopup('Mohon lengkapi Nama, WhatsApp, dan Info Pengiriman (Nama Penerima, Nomor, Alamat).');
+                    return;
+                }
+
+                const cart = getCart();
+                if (cart.length === 0) {
+                    showNotificationPopup('Keranjang Anda kosong.');
+                    return;
+                }
+
+                // Hitung total harga
+                let subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+                let totalDiscount = 0;
+                if (appliedVoucher) {
+                    const voucher = VOUCHER_CODES[appliedVoucher];
+                    totalDiscount = cart.reduce((sum, item) => item.id.startsWith(voucher.target) ? sum + (voucher.discount * item.quantity) : sum, 0);
+                }
+                const finalTotalPrice = subtotal - totalDiscount;
+
+                // Siapkan objek data untuk dikirim
+                const orderData = {
+                    customerName, customerWhatsapp,
+                    recipientName, recipientPhone, shippingAddress, shippingDate,
+                    items: cart,
+                    totalPrice: finalTotalPrice,
+                    voucherCode: appliedVoucher || ''
+                };
+
+                checkoutBtn.disabled = true;
+                checkoutBtn.textContent = 'Memproses...';
+
+                fetch(WEB_APP_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify(orderData)
+                })
+                .then(response => response.json())
+                .then(response => {
+                    if (response.status === 'success') {
+                        const defaultMessage = `Halo admin Yanoshi, saya *${customerName}* sudah checkout dari webstore, tolong segera di proses ya!`;
+                        const waLink = `https://wa.me/${ADMIN_WHATSAPP_NUMBER}?text=${encodeURIComponent(defaultMessage)}`;
+                        document.getElementById('konfirmasi-wa-btn').href = waLink;
+                        
+                        localStorage.removeItem('yanoshiCart');
+                        saveCart([]);
+                        appliedVoucher = null;
+                        
+                        document.getElementById('checkout-popup').style.display = 'flex';
+                    } else {
+                        showNotificationPopup('Terjadi kesalahan: ' + response.message);
+                    }
+                })
+                .catch(error => {
+                    showNotificationPopup('Gagal terhubung ke server. Coba lagi nanti.');
+                    console.error('Checkout Error:', error);
+                })
+                .finally(() => {
+                    checkoutBtn.disabled = false;
+                    checkoutBtn.textContent = 'CHECKOUT';
+                });
+            });
 
 
             // --- NAVIGATION & UI INITIALIZATION ---
@@ -1038,4 +1085,3 @@
     </script>
 </body>
 </html>
-
