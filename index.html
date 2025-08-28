@@ -722,7 +722,6 @@
                 "Snack Jepang": { title: "Paket Snack Jepang", detail: "Paket box snack Jepang isi 20+, isi sesuai pada gambar di katalog ini.", sizeChart: null }
             };
 
-            // PERUBAHAN: Penambahan fungsi formatPhoneNumber
             function formatPhoneNumber(phoneNumber) {
                 if (!phoneNumber) return ''; 
                 let cleanNumber = String(phoneNumber).trim().replace(/[^0-9]/g, '');
@@ -922,6 +921,15 @@
                 renderCartPage();
             };
             
+            const getCurrentPrice = (item, cart) => {
+                const totalKpQuantity = cart.reduce((sum, cartItem) => cartItem.id.startsWith("KP") ? sum + cartItem.quantity : sum, 0);
+                const rule = PRICING_RULES[item.id.substring(0, 2)];
+                if (rule && totalKpQuantity >= rule.tiers[0].minQty) {
+                    return rule.tiers[0].price;
+                }
+                return item.price;
+            };
+
             let appliedVoucher = null;
             document.getElementById('apply-voucher-btn').addEventListener('click', () => {
                 const voucherCode = document.getElementById('voucher-input').value.toUpperCase();
@@ -933,26 +941,22 @@
                         appliedVoucher = voucherCode;
                         document.getElementById('discount-amount').textContent = `- Rp ${totalDiscount.toLocaleString('id-ID')}`;
                         document.getElementById('discount-row').style.display = 'flex';
-                        const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+                        
+                        // PERBAIKAN LOGIKA VOUCHER ADA DI SINI
+                        const subtotal = cart.reduce((sum, item) => sum + getCurrentPrice(item, cart) * item.quantity, 0);
                         document.getElementById('total-price').textContent = `Rp ${(subtotal - totalDiscount).toLocaleString('id-ID')}`;
                         showNotificationPopup('Yay! Voucher berhasil digunakan!');
-                    } else { showNotificationPopup('Voucher tidak berlaku untuk produk di keranjangmu.'); }
-                } else { showNotificationPopup('Kode voucher salah atau tidak valid.'); }
+                    } else { 
+                        showNotificationPopup('Voucher tidak berlaku untuk produk di keranjangmu.'); 
+                    }
+                } else { 
+                    showNotificationPopup('Kode voucher salah atau tidak valid.'); 
+                }
             });
             
-            const getCurrentPrice = (item, cart) => {
-                const totalKpQuantity = cart.reduce((sum, cartItem) => cartItem.id.startsWith("KP") ? sum + cartItem.quantity : sum, 0);
-                const rule = PRICING_RULES[item.id.substring(0, 2)];
-                if (rule && totalKpQuantity >= rule.tiers[0].minQty) {
-                    return rule.tiers[0].price;
-                }
-                return item.price;
-            };
-
             document.getElementById('checkout-btn').addEventListener('click', () => {
                 const checkoutBtn = document.getElementById('checkout-btn');
                 
-                // PERUBAHAN: Memanggil formatPhoneNumber saat mengambil data
                 const customerName = document.getElementById('customer-name').value.trim();
                 const customerWhatsapp = formatPhoneNumber(document.getElementById('customer-whatsapp').value);
                 const namaPenerima = document.getElementById('recipient-name').value.trim();
@@ -980,8 +984,12 @@
                 const finalTotalPrice = subtotal - totalDiscount;
 
                 const orderData = {
-                    customerName, customerWhatsapp,
-                    namaPenerima, nomorPenerima, alamatPenerima, tanggalKirim,
+                    customerName, 
+                    customerWhatsapp,
+                    namaPenerima, 
+                    nomorPenerima, 
+                    alamatPenerima, 
+                    tanggalKirim,
                     items: cart,
                     totalPrice: finalTotalPrice,
                     voucherCode: appliedVoucher || ''
