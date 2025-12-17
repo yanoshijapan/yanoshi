@@ -667,7 +667,7 @@
 
                     <div class="cart-summary" id="cart-summary" style="display:none; margin-top:32px;">
                         <div style="display:flex; gap:8px; margin-bottom:16px;">
-                            <input type="text" class="form-input" id="voucher-input" placeholder="Kode Voucher" style="margin-bottom:0;">
+                            <input type="text" class="form-input" id="voucher-input" placeholder="Voucher Code / Kode Voucher" style="margin-bottom:0;">
                             <button id="apply-voucher" style="background:var(--primary); color:white; border:none; padding:0 20px; border-radius:10px;">Use</button>
                         </div>
                         <div id="discount-row" style="display:none; justify-content:space-between; color:#27ae60; margin-bottom:8px;">
@@ -891,7 +891,7 @@
                         </div>
                         ${sizeOptions ? `<select class="size-selector">${sizeOptions}</select>` : ''}
                         <button class="add-to-cart-btn" ${isOutOfStock ? 'disabled' : ''} data-id="${id}">
-                            ${isOutOfStock ? 'Habis' : 'Beli'}
+                            ${isOutOfStock ? 'Sold Out' : 'Add to Cart'}
                         </button>
                     </div>
                 `;
@@ -922,7 +922,7 @@
 
                     localStorage.setItem('yanoshiCart', JSON.stringify(cart));
                     updateCartBadge();
-                    showToast('✅ Masuk keranjang');
+                    showToast('✅ Added to Cart');
                 });
             });
         };
@@ -1108,4 +1108,5 @@
     </script>
 </body>
 </html>
+
 
