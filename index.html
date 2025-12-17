@@ -11,7 +11,7 @@
             --primary: #1a1a2e;
             --secondary: #e94560;
             --accent: #0f3460;
-            --bg: #f8f9fa; /* Warna dasar off-white */
+            --bg: #f8f9fa;
             --text: #2d3436;
             --white: #fff;
             --glass: rgba(255, 255, 255, 0.85);
@@ -28,22 +28,17 @@
             line-height: 1.6;
             -webkit-tap-highlight-color: transparent;
             position: relative;
-            /* Memastikan body cukup tinggi agar background pattern terlihat */
             min-height: 100vh; 
         }
 
-        /* --- BACKGROUND PATTERN (Jalanan Jepang Tipis) --- */
-        /* Ini adalah layer paling belakang yang akan terlihat saat banner di atasnya memudar */
+        /* Background Pattern */
         body::before {
             content: "";
             position: fixed;
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 100%;
+            top: 0; left: 0; width: 100%; height: 100%;
             background: url('https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?q=80&w=1988&auto=format&fit=crop') center/cover;
             filter: grayscale(100%);
-            opacity: 0.10; /* Sangat tipis */
+            opacity: 0.10;
             z-index: -1;
             pointer-events: none;
         }
@@ -169,20 +164,16 @@
         .dropdown-content { display: none; background: rgba(0,0,0,0.2); }
         .dropdown-content.show { display: block; }
 
-        /* --- HERO SECTION DENGAN MASKING --- */
+        /* Hero Section */
         .hero-section {
             position: relative;
-            min-height: 80vh; /* Sedikit lebih tinggi agar fadenya halus */
+            min-height: 80vh;
             display: flex;
             align-items: center;
             justify-content: center;
             overflow: hidden;
             margin-top: 0;
             padding-top: 68px;
-            
-            /* TEKNIK KUNCI: CSS MASKING */
-            /* Ini membuat seluruh hero section perlahan transparan di bagian bawah */
-            /* Hitam = terlihat, Transparan = tidak terlihat */
             -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
             mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
             z-index: 1;
@@ -191,7 +182,6 @@
         .hero-parallax {
             position: absolute;
             inset: 0;
-            /* FOTO KOTA JEPANG (Tokyo Night) */
             background: url('https://images.unsplash.com/photo-1503899036084-c55cdd92da26?q=80&w=1974&auto=format&fit=crop') center/cover no-repeat;
             transform: scale(1.1);
         }
@@ -199,8 +189,6 @@
         .hero-overlay {
             position: absolute;
             inset: 0;
-            /* Overlay gelap solid tapi transparan untuk keterbacaan teks */
-            /* Masking di induknya (.hero-section) akan mengurus gradasinya */
             background: rgba(26,26,46,0.5); 
             z-index: 2;
         }
@@ -211,7 +199,7 @@
             padding: 0 24px;
             width: 100%;
             text-align: center;
-            margin-bottom: 80px; /* Jarak ekstra dari bawah agar tidak terlalu pudar */
+            margin-bottom: 80px;
         }
 
         .hero-title {
@@ -246,21 +234,20 @@
         .btn-hero-primary:hover { transform: translateY(-4px); box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
 
 
-        /* --- FASHION MENU LAYOUT --- */
+        /* --- LAYOUT MENU & CARD SYSTEM --- */
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            /* Padding atas dikurangi karena hero section sudah memudar */
             padding: 0px 20px 60px 20px; 
             position: relative;
-            z-index: 5; /* Konten harus di atas background */
+            z-index: 5;
         }
 
         .section-header { text-align: left; margin-bottom: 40px; padding-left: 8px; border-left: 4px solid var(--secondary); }
         .section-title { font-size: 2rem; color: var(--primary); }
         .section-subtitle { color: #555; margin-top: 4px; font-weight: 500;}
 
-        /* Layout Editorial Fashion */
+        /* MOBILE DEFAULT LAYOUT */
         .fashion-menu {
             display: flex;
             flex-direction: column;
@@ -272,23 +259,17 @@
             border-radius: 24px;
             overflow: hidden;
             cursor: pointer;
-            height: 220px;
+            height: 220px; /* Default Mobile Height */
             box-shadow: var(--shadow);
-            transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
             opacity: 0;
             animation: fadeInUp 0.8s forwards;
             background-color: #eee;
-            /* Border lebih tipis agar menyatu dengan background */
             border: 1px solid rgba(255,255,255,0.2);
         }
 
         .fashion-card:nth-child(3n+1) { height: 300px; } 
         .fashion-card:nth-child(even) { height: 240px; }
-
-        .fashion-card:hover {
-            transform: scale(0.98);
-            box-shadow: var(--shadow-lg);
-        }
 
         .fashion-bg {
             position: absolute;
@@ -320,12 +301,9 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            transform: translateY(0);
             transition: transform 0.3s;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
-
-        .fashion-card:hover .fashion-label-box { background: rgba(255, 255, 255, 0.3); }
 
         .fashion-title {
             color: white;
@@ -348,26 +326,126 @@
             font-size: 0.9rem;
         }
 
-        /* Product & Cart */
+        /* Product Styles */
         .product-header { margin-bottom: 32px; }
         .product-header h1 { font-size: 2rem; color: var(--primary); }
-        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 20px; }
+        
+        .product-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); 
+            gap: 20px; 
+        }
+
         .product-card { background: white; border-radius: 16px; overflow: hidden; box-shadow: var(--shadow); transition: all 0.3s; animation: scaleIn 0.5s backwards; }
         .product-image-wrapper { position: relative; padding-top: 100%; }
         .product-image { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
         .product-info { padding: 16px; }
         .product-name { font-size: 0.95rem; font-weight: 600; margin-bottom: 8px; line-height: 1.4; height: 42px; overflow: hidden; }
-        .product-price { color: var(--secondary); font-weight: 800; font-size: 1.1rem; margin-bottom: 12px; }
+        
+        /* NEW: PRICE CONTAINER STYLES (UPDATED FOR STACKING) */
+        .product-price-container {
+            display: flex;
+            flex-direction: column; /* Mengubah arah menjadi vertikal */
+            align-items: flex-start; /* Meratakan ke kiri */
+            gap: 4px; /* Jarak antar harga */
+            margin-bottom: 12px;
+        }
+
+        .product-price { color: var(--secondary); font-weight: 800; font-size: 1.1rem; }
+        
+        /* Gaya Harga Coret */
+        .product-price-coret { 
+            text-decoration: line-through; 
+            color: #95a5a6; 
+            font-size: 0.85rem; 
+            font-weight: 500;
+        }
+
         .add-to-cart-btn { width: 100%; padding: 10px; background: var(--primary); color: white; border: none; border-radius: 8px; font-weight: 600; font-size: 0.9rem; }
         .add-to-cart-btn:disabled { background: #ccc; }
         .size-selector { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 12px; }
 
-        /* Loader */
+
+        /* --- DESKTOP SPECIFIC STYLES --- */
+        @media (min-width: 1024px) {
+            .container {
+                max-width: 1400px;
+                padding: 0 40px 80px 40px;
+            }
+
+            .section-header {
+                margin-bottom: 60px;
+                text-align: center;
+                border-left: none;
+                position: relative;
+            }
+            .section-header::after {
+                content: ''; width: 60px; height: 4px; background: var(--secondary);
+                position: absolute; bottom: -15px; left: 50%; transform: translateX(-50%);
+                border-radius: 2px;
+            }
+            .section-title { font-size: 2.5rem; font-weight: 800; letter-spacing: -1px; }
+
+            /* BENTO GRID MENU LAYOUT */
+            .fashion-menu {
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                grid-auto-rows: 280px;
+                gap: 24px;
+            }
+
+            .fashion-card:nth-child(n) { height: 100%; }
+            .fashion-card[data-category="Streetwear"] { grid-column: span 2; grid-row: span 2; }
+            .fashion-card[data-category="T-Shirt"] { grid-column: span 1; grid-row: span 1; }
+            .fashion-card[data-category="Hoodie"] { grid-column: span 1; grid-row: span 2; }
+            .fashion-card[data-category="Kakejiku Deluxe"] { grid-column: span 1; grid-row: span 1; }
+            .fashion-card[data-category="Kakejiku Premium"] { grid-column: span 1; grid-row: span 2; }
+            .fashion-card[data-category="Keychain"] { grid-column: span 2; grid-row: span 1; }
+            .fashion-card[data-category="Sake Set"] { grid-column: span 1; grid-row: span 1; }
+            .fashion-card[data-category="Katana"] { grid-column: span 2; grid-row: span 1; }
+            .fashion-card[data-category="Snack Jepang"] { grid-column: span 1; grid-row: span 1; }
+
+            .fashion-card { border-radius: 30px; border: none; }
+            .fashion-card:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(0,0,0,0.2); z-index: 2; }
+            
+            .fashion-label-box {
+                width: auto;
+                display: inline-flex;
+                gap: 12px;
+                background: rgba(255, 255, 255, 0.9);
+                border-radius: 50px;
+                padding: 10px 20px;
+                backdrop-filter: none;
+                margin-left: -5px;
+                margin-bottom: -5px;
+            }
+            
+            .fashion-title { color: var(--primary); font-size: 0.9rem; }
+            .fashion-arrow { width: 28px; height: 28px; transform: rotate(-45deg); transition: 0.3s; }
+            .fashion-card:hover .fashion-arrow { transform: rotate(0deg); background: var(--primary); }
+
+            /* --- 3 COLUMN PRODUCT GRID FOR DESKTOP --- */
+            .product-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 32px;
+            }
+
+            .product-card {
+                border-radius: 20px;
+            }
+
+            .product-name {
+                font-size: 1.1rem;
+            }
+        }
+        /* --- END DESKTOP STYLE --- */
+
+
+        /* Utils */
         .loader-overlay { position: fixed; inset: 0; background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); z-index: 9999; display: none; justify-content: center; align-items: center; flex-direction: column; }
         .loader-spinner { width: 60px; height: 60px; border: 4px solid rgba(233, 69, 96, 0.1); border-left-color: var(--secondary); border-radius: 50%; animation: spin 1s linear infinite; }
         .loader-text { margin-top: 16px; font-weight: 600; color: var(--primary); letter-spacing: 1px; animation: pulse 1.5s infinite; }
 
-        /* Cart */
         .cart-container { background: white; border-radius: 20px; padding: 24px; min-height: 80vh; }
         .cart-item { display: flex; gap: 16px; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #eee; }
         .cart-item-image { width: 80px; height: 80px; border-radius: 12px; object-fit: cover; }
@@ -378,7 +456,6 @@
         .btn-checkout { width: 100%; padding: 16px; background: var(--secondary); color: white; border: none; border-radius: 12px; font-weight: 700; margin-top: 24px; font-size: 1.1rem; }
         .btn-back { padding: 12px; background: none; border: none; cursor: pointer; color: var(--primary); font-weight: 600; }
 
-        /* Modals */
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 3000; padding: 20px; align-items: center; justify-content: center; }
         .modal.show { display: flex; }
         .modal-content-wrapper { background: white; padding: 24px; border-radius: 20px; width: 100%; max-width: 400px; text-align: center; }
@@ -388,7 +465,6 @@
         .view { display: none; }
         .view.active { display: block; animation: fadeInUp 0.4s; }
 
-        /* Animation Delays */
         .fashion-card:nth-child(1) { animation-delay: 0.1s; }
         .fashion-card:nth-child(2) { animation-delay: 0.2s; }
         .fashion-card:nth-child(3) { animation-delay: 0.3s; }
@@ -410,7 +486,7 @@
     <header class="main-header">
         <div class="header-container">
             <div class="logo-container" id="logo-home">
-                <img src="https://yanoshijapan.github.io/asetonline/logohitam.png" alt="Yanoshi">
+                <img src="https://yanoshijapan.github.io/asetonline/logohitam.png" alt="Yanoshi" style="cursor:pointer;">
             </div>
             <div class="header-actions">
                 <button class="cart-btn" id="cart-button">
@@ -653,7 +729,7 @@
     <div id="toast"></div>
 
     <script>
-        const API_URL = 'https://script.google.com/macros/s/AKfycbweGxvOCzzONVZI7Eth-J3sUTaSgD5XBOOE3aSXchaYYfWr10Bmh0Idep8VU3Kl4W61/exec';
+        const API_URL = 'https://script.google.com/macros/s/AKfycbyuDv_q9cAP7ya5ZWsfOeszyFiqjXQUx75KtWK041upPNlg25NdVLaKhKVgJ8Idfh9E/exec';
         const WA_NUMBER = '6281290156936';
 
         const CATEGORY_INFO = {
@@ -793,13 +869,26 @@
                     });
                 }
 
+                // LOGIC UNTUK MENAMPILKAN HARGA CORET
+                let priceHtml = '';
+                if (main.originalPrice && main.originalPrice > main.price) {
+                     priceHtml = `
+                        <div class="product-price-coret">Rp ${parseInt(main.originalPrice).toLocaleString('id-ID')}</div>
+                        <div class="product-price">Rp ${main.price.toLocaleString('id-ID')}</div>
+                     `;
+                } else {
+                     priceHtml = `<div class="product-price">Rp ${main.price.toLocaleString('id-ID')}</div>`;
+                }
+
                 card.innerHTML = `
                     <div class="product-image-wrapper">
                         <img src="${main.image}" class="product-image" onclick="viewImage('${main.image}')">
                     </div>
                     <div class="product-info">
                         <div class="product-name">${main.name}</div>
-                        <div class="product-price">Rp ${main.price.toLocaleString('id-ID')}</div>
+                        <div class="product-price-container">
+                            ${priceHtml}
+                        </div>
                         ${sizeOptions ? `<select class="size-selector">${sizeOptions}</select>` : ''}
                         <button class="add-to-cart-btn" ${isOutOfStock ? 'disabled' : ''} data-id="${id}">
                             ${isOutOfStock ? 'Habis' : 'Beli'}
@@ -815,7 +904,10 @@
                     const card = this.closest('.product-card');
                     const id = this.dataset.id;
                     const name = card.querySelector('.product-name').textContent;
-                    const price = parseInt(card.querySelector('.product-price').textContent.replace(/[^0-9]/g, ''));
+                    // Ambil harga yang valid (harga jual), abaikan harga coret
+                    const priceText = card.querySelector('.product-price').textContent;
+                    const price = parseInt(priceText.replace(/[^0-9]/g, ''));
+                    
                     const image = card.querySelector('.product-image').src;
                     const selector = card.querySelector('.size-selector');
                     const size = selector ? selector.value : '';
@@ -931,6 +1023,7 @@
             }
         });
 
+        // --- UPDATED CHECKOUT LOGIC (Include Tanggal Kirim) ---
         document.getElementById('checkout-btn').addEventListener('click', async () => {
             const btn = document.getElementById('checkout-btn');
             const name = document.getElementById('customer-name').value;
@@ -938,6 +1031,7 @@
             const rName = document.getElementById('recipient-name').value;
             const rPhone = document.getElementById('recipient-phone').value;
             const addr = document.getElementById('shipping-address').value;
+            const shipDate = document.getElementById('shipping-date').value; 
 
             if(!name || !wa || !rName || !rPhone || !addr) return showToast('❌ Lengkapi data dulu');
 
@@ -947,7 +1041,7 @@
             let msg = `*ORDER BARU YANOSHI*\n`;
             msg += `Nama: ${name}\nWA: ${wa}\n\n`;
             msg += `*Penerima:*\n${rName} (${rPhone})\n${addr}\n`;
-            if(document.getElementById('shipping-date').value) msg += `Req Kirim: ${document.getElementById('shipping-date').value}\n`;
+            if(shipDate) msg += `Req Kirim: ${shipDate}\n`;
             msg += `\n*Pesanan:*\n`;
             cart.forEach(i => msg += `- ${i.name} x${i.quantity}\n`);
             if(appliedVoucher) msg += `\nVoucher: ${appliedVoucher}`;
@@ -965,16 +1059,23 @@
                         namaPenerima: rName,
                         nomorPenerima: rPhone,
                         alamatPenerima: addr,
+                        tanggalKirim: shipDate, // Dikirim ke Backend
                         items: cart,
                         totalPrice: parseInt(total.replace(/[^0-9]/g, '')),
                         voucherCode: appliedVoucher || ''
                     })
                 });
                 
-                localStorage.removeItem('yanoshiCart');
-                updateCartBadge();
-                document.getElementById('wa-confirm-btn').href = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`;
-                document.getElementById('checkout-modal').classList.add('show');
+                const result = await response.json();
+
+                if(result.status === 'success') {
+                    localStorage.removeItem('yanoshiCart');
+                    updateCartBadge();
+                    document.getElementById('wa-confirm-btn').href = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`;
+                    document.getElementById('checkout-modal').classList.add('show');
+                } else {
+                    showToast('Gagal: ' + result.message);
+                }
 
             } catch(e) {
                 showToast('Gagal koneksi, coba lagi');
