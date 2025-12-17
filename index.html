@@ -480,7 +480,7 @@
 <body>
     <div class="loader-overlay" id="loader-overlay">
         <div class="loader-spinner"></div>
-        <div class="loader-text">MEMUAT PRODUK...</div>
+        <div class="loader-text">商品読み込み中...</div>
     </div>
 
     <header class="main-header">
@@ -506,9 +506,9 @@
             <button class="close-btn" id="close-nav">&times;</button>
         </div>
         <div class="sidenav-content">
-            <div class="nav-item" data-action="home">Beranda</div>
+            <div class="nav-item" data-action="home">Home</div>
             <button class="dropdown-btn" id="katalog-dropdown">
-                Katalog <i class="fas fa-chevron-down"></i>
+                Catalog <i class="fas fa-chevron-down"></i>
             </button>
             <div class="dropdown-content" id="katalog-content">
                 <div class="nav-item" data-category="Streetwear">Streetwear</div>
@@ -519,11 +519,11 @@
                 <div class="nav-item" data-category="Keychain">Keychain</div>
                 <div class="nav-item" data-category="Sake Set">Sake Set</div>
                 <div class="nav-item" data-category="Katana">Katana</div>
-                <div class="nav-item" data-category="Snack Jepang">Snack Jepang</div>
+                <div class="nav-item" data-category="Snack Jepang">Japanese Snaack</div>
             </div>
-            <div class="nav-item" data-action="cart">Keranjang</div>
+            <div class="nav-item" data-action="cart">Cart</div>
             <a href="https://wa.me/6281290156936?text=Halo%20Admin%20Yanoshi" target="_blank" style="text-decoration: none;">
-                <div class="nav-item">Kontak Kami</div>
+                <div class="nav-item">Contact Us</div>
             </a>
         </div>
     </nav>
@@ -536,15 +536,15 @@
                 
                 <div class="hero-content">
                     <h1 class="hero-title">Yanoshi Japan</h1>
-                    <p class="hero-subtitle">Premium Japanese Souvenir Store</p>
-                    <button class="btn-hero btn-hero-primary" id="shop-now">Belanja Sekarang</button>
+                    <p class="hero-subtitle">2015年の創業以来、日本の最新トレンドを<br>取り入れたスタイリッシュなファッションとアクセサリーをお届けしています。<br>厳選された本物の日本製品を、確かな品質とお求めやすい価格でご提供いたします。</p>
+                    <button class="btn-hero btn-hero-primary" id="shop-now">SHOP NOW</button>
                 </div>
                 </section>
 
             <div class="container">
                 <div class="section-header">
-                    <h2 class="section-title">Koleksi</h2>
-                    <p class="section-subtitle">Eksplorasi kategori pilihan terbaik</p>
+                    <h2 class="section-title">COLLECTION</h2>
+                    <p class="section-subtitle">おすすめカテゴリーを見る</p>
                 </div>
 
                 <div class="fashion-menu">
@@ -632,7 +632,7 @@
                         <div class="fashion-bg" style="background-image: url('https://yanoshijapan.github.io/asetonline/snackjepang.jpg')"></div>
                         <div class="fashion-overlay">
                             <div class="fashion-label-box">
-                                <span class="fashion-title">Snack Jepang</span>
+                                <span class="fashion-title">Japanese Snack</span>
                                 <div class="fashion-arrow"><i class="fas fa-arrow-right"></i></div>
                             </div>
                         </div>
@@ -644,12 +644,12 @@
         <div id="product-view" class="view">
             <div class="container" style="padding-top: 40px;">
                 <button class="btn-back" id="back-to-home-product">
-                    <i class="fas fa-arrow-left"></i> Kembali
+                    <i class="fas fa-arrow-left"></i> Back
                 </button>
                 <div class="product-header">
                     <h1 id="product-title"></h1>
                     <p id="product-desc" style="color:#666;"></p>
-                    <a href="#" class="size-chart-link" id="size-chart-link" style="display:none; color:var(--secondary); font-weight:bold; margin-top:8px; display:inline-block;">📏 Lihat Size Chart</a>
+                    <a href="#" class="size-chart-link" id="size-chart-link" style="display:none; color:var(--secondary); font-weight:bold; margin-top:8px; display:inline-block;">📏 Show Size Chart</a>
                 </div>
                 
                 <div class="product-grid" id="product-grid"></div>
@@ -659,19 +659,19 @@
         <div id="cart-view" class="view">
             <div class="container" style="padding-top: 40px;">
                 <button class="btn-back" id="back-to-home-cart">
-                    <i class="fas fa-arrow-left"></i> Kembali
+                    <i class="fas fa-arrow-left"></i> Back
                 </button>
                 <div class="cart-container">
-                    <h1 style="margin-bottom:24px;">🛒 Keranjang</h1>
+                    <h1 style="margin-bottom:24px;">🛒 Cart</h1>
                     <div id="cart-items"></div>
 
                     <div class="cart-summary" id="cart-summary" style="display:none; margin-top:32px;">
                         <div style="display:flex; gap:8px; margin-bottom:16px;">
                             <input type="text" class="form-input" id="voucher-input" placeholder="Kode Voucher" style="margin-bottom:0;">
-                            <button id="apply-voucher" style="background:var(--primary); color:white; border:none; padding:0 20px; border-radius:10px;">Gunakan</button>
+                            <button id="apply-voucher" style="background:var(--primary); color:white; border:none; padding:0 20px; border-radius:10px;">Use</button>
                         </div>
                         <div id="discount-row" style="display:none; justify-content:space-between; color:#27ae60; margin-bottom:8px;">
-                            <span>Diskon</span>
+                            <span>Discount</span>
                             <span id="discount-amount"></span>
                         </div>
                         <div style="display:flex; justify-content:space-between; font-size:1.3rem; font-weight:bold; border-top:1px solid #ddd; padding-top:16px;">
@@ -680,15 +680,15 @@
                         </div>
                         
                         <div style="margin-top:32px;">
-                            <h3 style="margin-bottom:16px;">Data Pembeli</h3>
-                            <input type="text" class="form-input" id="customer-name" placeholder="Nama Lengkap">
-                            <input type="tel" class="form-input" id="customer-wa" placeholder="Nomor WhatsApp">
+                            <h3 style="margin-bottom:16px;">Customer Detail / Data Pembeli</h3>
+                            <input type="text" class="form-input" id="customer-name" placeholder="Customer Name / Nama Pembeli">
+                            <input type="tel" class="form-input" id="customer-wa" placeholder="WhatsApp Number / No. WhatsApp">
                             
-                            <h3 style="margin-bottom:16px; margin-top:24px;">Alamat Kirim</h3>
-                            <input type="text" class="form-input" id="recipient-name" placeholder="Nama Penerima">
-                            <input type="tel" class="form-input" id="recipient-phone" placeholder="No. HP Penerima">
-                            <textarea class="form-textarea" id="shipping-address" rows="3" placeholder="Alamat Lengkap"></textarea>
-                            <label style="font-size:0.9rem; font-weight:600;">Request Tanggal Kirim (Opsional)</label>
+                            <h3 style="margin-bottom:16px; margin-top:24px;">Shipping Address / Alamat Kirim</h3>
+                            <input type="text" class="form-input" id="recipient-name" placeholder="Recipient Name / Nama Penerima">
+                            <input type="tel" class="form-input" id="recipient-phone" placeholder="Recipient Phone Number / No. HP Penerima">
+                            <textarea class="form-textarea" id="shipping-address" rows="3" placeholder="Shipping Address / Alamat Lengkap"></textarea>
+                            <label style="font-size:0.9rem; font-weight:600;">Shipping Date / Request Tanggal Kirim (Optional)</label>
                             <input type="date" class="form-input" id="shipping-date">
                         </div>
 
@@ -713,7 +713,7 @@
             <br>
             <a href="#" id="wa-confirm-btn" target="_blank" style="display:block; padding:12px; background:#25D366; color:white; text-decoration:none; border-radius:10px; font-weight:bold;">Buka WhatsApp</a>
             <br>
-            <button id="close-checkout-modal" style="background:none; border:none; color:#666; cursor:pointer;">Tutup</button>
+            <button id="close-checkout-modal" style="background:none; border:none; color:#666; cursor:pointer;">Close</button>
         </div>
     </div>
 
@@ -733,15 +733,15 @@
         const WA_NUMBER = '6281290156936';
 
         const CATEGORY_INFO = {
-            "Streetwear": { title: "Streetwear", detail: "Tshirt dengan cutting oversize berbahan cotton 20S dan sablon rubber.", sizeChart: "https://yanoshijapan.github.io/asetonline/SZO.jpg" },
-            "T-Shirt": { title: "T-Shirt Reguler", detail: "Tshirt dengan bahan cotton 24S dan sablon rubber.", sizeChart: "https://yanoshijapan.github.io/asetonline/SZT.jpg" },
-            "Hoodie": { title: "Hoodie Pullover", detail: "Hoodie pullover bahan cotton fleece.", sizeChart: "https://yanoshijapan.github.io/asetonline/SZH.jpg" },
-            "Kakejiku Deluxe": { title: "Kakejiku Deluxe", detail: "Hiasan dinding kanvas suede 90x30cm.", sizeChart: null },
-            "Kakejiku Premium": { title: "Kakejiku Premium", detail: "Hiasan dinding kanvas lukis 90x30cm.", sizeChart: null, popupImage: "https://yanoshijapan.github.io/asetonline/diskonpremium.jpg" },
-            "Keychain": { title: "Acrylic Keychain", detail: "Gantungan kunci akrilik diameter 5cm (1 box isi 6).", sizeChart: null },
-            "Sake Set": { title: "Sake Set", detail: "Gelas keramik Jepang set.", sizeChart: null },
-            "Katana": { title: "Katana", detail: "Katana jepang bilah stainless.", sizeChart: null },
-            "Snack Jepang": { title: "Paket Snack", detail: "Paket box snack Jepang isi 20+.", sizeChart: null }
+            "Streetwear": { title: "Streetwear", detail: "Tshirt dengan cutting oversize berbahan cotton 20S dan sablon rubber.<br>20Sコットンを使用した、オーバーサイズシルエットのTシャツ。<br>耐久性のあるラバープリントが特徴です。", sizeChart: "https://yanoshijapan.github.io/asetonline/SZO.jpg" },
+            "T-Shirt": { title: "T-Shirt Reguler", detail: "Tshirt dengan bahan cotton 24S dan sablon rubber.<br>24sコットンを使用し、ラバープリントを施したTシャツです。", sizeChart: "https://yanoshijapan.github.io/asetonline/SZT.jpg" },
+            "Hoodie": { title: "Hoodie Pullover", detail: "Hoodie pullover bahan cotton fleece.<br>コットンフリース素材のプルオーバーパーカー", sizeChart: "https://yanoshijapan.github.io/asetonline/SZH.jpg" },
+            "Kakejiku Deluxe": { title: "Kakejiku Deluxe", detail: "Hiasan dinding kanvas suede 90x30cm.<br>スエードキャンバス掛軸 (90x30cm)", sizeChart: null },
+            "Kakejiku Premium": { title: "Kakejiku Premium", detail: "Hiasan dinding kanvas lukis 90x30cm.<br>キャンバス掛軸 (90x30cm)", sizeChart: null, popupImage: "https://yanoshijapan.github.io/asetonline/diskonpremium.jpg" },
+            "Keychain": { title: "Acrylic Keychain", detail: "Gantungan kunci akrilik diameter 5cm (1 box isi 6).<br>アクリルキーホルダー 直径5cm (1BOX 6個入り)", sizeChart: null },
+            "Sake Set": { title: "Sake Set", detail: "Gelas keramik Jepang set.<br>日本製の陶器カップセット", sizeChart: null },
+            "Katana": { title: "Katana", detail: "Katana jepang bilah stainless.<br>ステンレス刀身の日本刀", sizeChart: null },
+            "Snack Jepang": { title: "Paket Snack", detail: "Paket box snack Jepang isi 20+.<br>日本のお菓子詰め合わせBOX (20点以上)", sizeChart: null }
         };
 
         const PRICING_RULES = { "KP": { tiers: [{ minQty: 5, price: 129000 }] } };
@@ -800,7 +800,7 @@
             if (!info) return;
 
             document.getElementById('product-title').textContent = info.title;
-            document.getElementById('product-desc').textContent = info.detail;
+            document.getElementById('product-desc').innerHTML = info.detail;
             
             const sizeChartLink = document.getElementById('size-chart-link');
             if (info.sizeChart) {
@@ -831,10 +831,10 @@
                 if (data.status === 'success') {
                     renderProducts(data.data);
                 } else {
-                    document.getElementById('product-grid').innerHTML = '<p>Gagal memuat produk</p>';
+                    document.getElementById('product-grid').innerHTML = '<p>Failed to load products</p>';
                 }
             } catch (error) {
-                document.getElementById('product-grid').innerHTML = '<p>Error koneksi</p>';
+                document.getElementById('product-grid').innerHTML = '<p>Error connection</p>';
             } finally {
                 showLoader(false);
             }
@@ -1047,7 +1047,7 @@
             if(appliedVoucher) msg += `\nVoucher: ${appliedVoucher}`;
             msg += `\n*TOTAL: ${total}*`;
 
-            btn.textContent = 'Memproses...';
+            btn.textContent = 'Please Wait...';
             btn.disabled = true;
 
             try {
@@ -1108,3 +1108,4 @@
     </script>
 </body>
 </html>
+
