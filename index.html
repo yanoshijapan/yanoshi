@@ -744,9 +744,17 @@
             "Snack Jepang": { title: "Paket Snack", detail: "Paket box snack Jepang isi 20+.<br>日本のお菓子詰め合わせBOX (20点以上)", sizeChart: null }
         };
 
-        const PRICING_RULES = { "KP": { tiers: [{ minQty: 5, price: 129000 }] } };
-        const PRICING_RULES = { "KD": { tiers: [{ minQty: 5, price: 146000 }] } };
-        const PRICING_RULES = { "KN": { tiers: [{ minQty: 5, price: 146000 }] } };
+        const PRICING_RULES = {
+          "KP": {
+            tiers: [{ minQty: 5, price: 129000 }]
+          },
+          "KD": {
+            tiers: [{ minQty: 5, price: 146000 }]
+          },
+          "KN": {
+            tiers: [{ minQty: 5, price: 146000 }]
+          }
+        };
         const VOUCHERS = { "DISKONTSHIRT": { discount: 10000, target: "TP" } };
         let appliedVoucher = null;
 
@@ -1110,6 +1118,7 @@
     </script>
 </body>
 </html>
+
 
 
 
